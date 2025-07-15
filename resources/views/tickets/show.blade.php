@@ -61,12 +61,9 @@
                             <form action="{{ route('tickets.assume', $ticket) }}" method="POST">
                                 @csrf
                                 <button type="submit" 
-                                    class="inline-flex items-center px-6 py-3 bg-[#22C55E] text-white text-lg font-bold rounded-lg shadow-[0_4px_0_0_#15803D] hover:translate-y-0.5 hover:shadow-[0_2px_0_0_#15803D] active:translate-y-1 active:shadow-none transition-all duration-150"
+                                    class="px-6 py-3 bg-green-600 text-black text-lg font-bold rounded-lg border-b-4 border-green-800 hover:bg-green-500 hover:border-green-700 active:border-b-0 active:mt-1 transition-all duration-150"
                                     title="Assumir Ticket">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 mr-2" fill="#ffffff" viewBox="0 0 24 24">
-                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                    <span class="text-white">Assumir</span>
+                                    Assumir
                                 </button>
                             </form>
                         @elseif($ticket->atendente_id === auth()->id())
@@ -74,24 +71,18 @@
                                 <form action="{{ route('tickets.resume', $ticket) }}" method="POST">
                                     @csrf
                                     <button type="submit" 
-                                        class="inline-flex items-center px-6 py-3 bg-[#2563EB] text-white text-lg font-bold rounded-lg shadow-[0_4px_0_0_#1D4ED8] hover:translate-y-0.5 hover:shadow-[0_2px_0_0_#1D4ED8] active:translate-y-1 active:shadow-none transition-all duration-150"
+                                        class="px-6 py-3 bg-blue-600 text-black text-lg font-bold rounded-lg border-b-4 border-blue-800 hover:bg-blue-500 hover:border-blue-700 active:border-b-0 active:mt-1 transition-all duration-150"
                                         title="Retomar Atendimento">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 mr-2" fill="#ffffff" viewBox="0 0 24 24">
-                                            <path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
-                                        </svg>
-                                        <span class="text-white">Retomar</span>
+                                        Retomar
                                     </button>
                                 </form>
                             @else
                                 <form action="{{ route('tickets.pause', $ticket) }}" method="POST">
                                     @csrf
                                     <button type="submit" 
-                                        class="inline-flex items-center px-6 py-3 bg-[#F59E0B] text-white text-lg font-bold rounded-lg shadow-[0_4px_0_0_#B45309] hover:translate-y-0.5 hover:shadow-[0_2px_0_0_#B45309] active:translate-y-1 active:shadow-none transition-all duration-150"
+                                        class="px-6 py-3 bg-yellow-500 text-black text-lg font-bold rounded-lg border-b-4 border-yellow-700 hover:bg-yellow-400 hover:border-yellow-600 active:border-b-0 active:mt-1 transition-all duration-150"
                                         title="Pausar Atendimento">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 mr-2" fill="#ffffff" viewBox="0 0 24 24">
-                                            <path d="M10 9v6m4-6v6"/>
-                                        </svg>
-                                        <span class="text-white">Pausar</span>
+                                        Pausar
                                     </button>
                                 </form>
                             @endif
@@ -100,12 +91,9 @@
                                 <form action="{{ route('tickets.resolve', $ticket) }}" method="POST">
                                     @csrf
                                     <button type="submit" 
-                                        class="inline-flex items-center px-6 py-3 bg-[#7C3AED] text-white text-lg font-bold rounded-lg shadow-[0_4px_0_0_#5B21B6] hover:translate-y-0.5 hover:shadow-[0_2px_0_0_#5B21B6] active:translate-y-1 active:shadow-none transition-all duration-150"
+                                        class="px-6 py-3 bg-purple-600 text-black text-lg font-bold rounded-lg border-b-4 border-purple-800 hover:bg-purple-500 hover:border-purple-700 active:border-b-0 active:mt-1 transition-all duration-150"
                                         title="Finalizar Atendimento">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 mr-2" fill="#ffffff" viewBox="0 0 24 24">
-                                            <path d="M5 13l4 4L19 7"/>
-                                        </svg>
-                                        <span class="text-white">Finalizar</span>
+                                        Finalizar
                                     </button>
                                 </form>
                             @endif
