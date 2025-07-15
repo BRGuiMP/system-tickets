@@ -1,13 +1,51 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistema de Tickets de Atendimento
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistema desenvolvido em Laravel para gerenciamento de tickets de atendimento, proporcionando uma interface intuitiva para usuários e atendentes.
 
-## About Laravel
+## Funcionalidades Principais
+
+### Gestão de Tickets
+- Criação de tickets com título, descrição, categoria e prioridade
+- Atribuição automática de status (Aberto, Em Andamento, Resolvido, Fechado, Cancelado)
+- Sistema de prioridades (Baixa, Média, Alta, Urgente)
+- Categorização de tickets para melhor organização
+
+### Sistema de Atendimento
+- Interface específica para atendentes
+- Botões de controle de atendimento:
+  - Assumir ticket
+  - Pausar atendimento
+  - Retomar atendimento
+  - Finalizar atendimento
+- Controle de tempo de atendimento:
+  - Registro de tempo total de atendimento
+  - Registro de tempo em pausa
+  - Histórico de início e fim de atendimento
+
+### Sistema de Mensagens
+- Troca de mensagens entre usuários e atendentes
+- Suporte para anexos em mensagens
+- Histórico completo de comunicação
+- Opção de exclusão de mensagens
+
+### Controle de Acesso
+- Separação entre usuários comuns e atendentes
+- Permissões específicas por tipo de usuário
+- Proteção de rotas e ações baseada em permissões
+
+### Interface
+- Design responsivo com Tailwind CSS
+- Feedback visual para ações importantes
+- Indicadores visuais de status e prioridade
+- Botões com efeitos visuais para melhor interatividade
+
+## Tecnologias Utilizadas
+
+- Laravel 10.x
+- PHP 8.1+
+- MySQL
+- Tailwind CSS
+- Laravel Breeze para autenticação
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
@@ -29,11 +67,76 @@ You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you
 
 If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+## Requisitos do Sistema
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Requisitos de Sistema
+- PHP 8.1 ou superior
+- Composer
+- MySQL 5.7 ou superior
+- Node.js e NPM (para assets)
 
-### Premium Partners
+### Extensões PHP Necessárias
+- BCMath
+- Ctype
+- JSON
+- Mbstring
+- OpenSSL
+- PDO
+- Tokenizer
+- XML
+
+## Instalação
+
+1. Clone o repositório
+```bash
+git clone https://github.com/seu-usuario/system-tickets.git
+```
+
+2. Instale as dependências do PHP
+```bash
+composer install
+```
+
+3. Copie o arquivo de ambiente
+```bash
+cp .env.example .env
+```
+
+4. Configure o banco de dados no arquivo .env
+
+5. Gere a chave da aplicação
+```bash
+php artisan key:generate
+```
+
+6. Execute as migrações
+```bash
+php artisan migrate
+```
+
+7. Instale as dependências do frontend
+```bash
+npm install
+npm run dev
+```
+
+## Uso
+
+### Tipos de Usuário
+
+1. **Usuário Comum**
+   - Pode criar tickets
+   - Visualizar seus próprios tickets
+   - Trocar mensagens com atendentes
+
+2. **Atendente**
+   - Visualizar todos os tickets
+   - Assumir tickets para atendimento
+   - Controlar tempo de atendimento
+   - Responder tickets
+   - Finalizar atendimentos
+
+## Manutenção
 
 - **[Vehikl](https://vehikl.com/)**
 - **[Tighten Co.](https://tighten.co)**
@@ -49,18 +152,33 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 - **[byte5](https://byte5.de)**
 - **[OP.GG](https://op.gg)**
 
-## Contributing
+## Status dos Tickets
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Os tickets podem ter os seguintes status:
 
-## Code of Conduct
+- **Aberto**: Ticket recém criado, aguardando atendimento
+- **Em Andamento**: Ticket assumido por um atendente
+- **Resolvido**: Atendimento finalizado com sucesso
+- **Fechado**: Ticket concluído e arquivado
+- **Cancelado**: Ticket cancelado sem resolução
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Controle de Tempo
 
-## Security Vulnerabilities
+O sistema registra automaticamente:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- Momento em que o ticket foi assumido
+- Períodos de pausa no atendimento
+- Tempo total gasto no atendimento
+- Tempo total em pausa
+- Data e hora de resolução
 
-## License
+## Mensagens e Anexos
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- Suporte para troca de mensagens entre usuários e atendentes
+- Possibilidade de anexar arquivos às mensagens
+- Histórico completo de comunicação mantido
+- Controle de permissões para exclusão de mensagens
+
+## Licença
+
+Este sistema é um software proprietário. Todos os direitos reservados.
