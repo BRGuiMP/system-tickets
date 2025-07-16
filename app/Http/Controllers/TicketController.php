@@ -81,7 +81,11 @@ class TicketController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('tickets.create', compact('categories'));
+        $users = null;
+        if (Auth::user()->tipo === 'atendente') {
+            $users = \App\Models\User::where('tipo', 'usuario')->orderBy('name')->get();
+        }
+        return view('tickets.create', compact('categories', 'users'));
     }
 
     /**
@@ -93,8 +97,13 @@ class TicketController extends Controller
             'titulo' => 'required|string|max:255',
             'descricao' => 'required|string',
             'categoria_id' => 'required|exists:categories,id',
-            'prioridade' => 'required|in:Baixa,Média,Alta,Urgente'
+            'prioridade' => 'required|in:Baixa,Média,Alta,Urgente',
         ]);
+
+        $usuarioId = Auth::id();
+        if (Auth::user()->tipo === 'atendente' && $request->filled('usuario_id')) {
+            $usuarioId = $request->usuario_id;
+        }
 
         $ticket = Ticket::create([
             'titulo' => $request->titulo,
@@ -102,7 +111,7 @@ class TicketController extends Controller
             'categoria_id' => $request->categoria_id,
             'prioridade' => $request->prioridade,
             'status' => 'Aberto',
-            'usuario_id' => Auth::id()
+            'usuario_id' => $usuarioId
         ]);
 
         return redirect()->route('tickets.show', $ticket)

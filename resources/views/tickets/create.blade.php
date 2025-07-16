@@ -48,6 +48,18 @@
                     required>{{ old('descricao') }}</textarea>
             </div>
 
+            @if(auth()->user()->tipo === 'atendente' && isset($users))
+            <div class="mb-4">
+                <label for="usuario_id" class="block text-gray-700 text-sm font-bold mb-2">Solicitante</label>
+                <select name="usuario_id" id="usuario_id" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                    <option value="">Selecione o usuário solicitante</option>
+                    @foreach($users as $user)
+                        <option value="{{ $user->id }}" {{ old('usuario_id') == $user->id ? 'selected' : '' }}>{{ $user->name }} ({{ $user->email }})</option>
+                    @endforeach
+                </select>
+            </div>
+            @endif
+
             <div class="flex items-center justify-between">
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                     Criar Ticket
