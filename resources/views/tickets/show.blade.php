@@ -8,8 +8,10 @@
             <div class="flex justify-between items-start">
                 <h2 class="text-2xl font-bold">Ticket #{{ $ticket->id }} - {{ $ticket->titulo }}</h2>
                 @can('update', $ticket)
-                    <a href="{{ route('tickets.edit', $ticket) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        Editar Ticket
+                    <a href="{{ route('tickets.edit', $ticket) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
                     </a>
                 @endcan
             </div>
@@ -61,9 +63,11 @@
                             <form action="{{ route('tickets.assume', $ticket) }}" method="POST">
                                 @csrf
                                 <button type="submit" 
-                                    class="px-6 py-3 bg-green-600 text-black text-lg font-bold rounded-lg border-b-4 border-green-800 hover:bg-green-500 hover:border-green-700 active:border-b-0 active:mt-1 transition-all duration-150"
+                                    class="p-3 bg-green-600 text-black font-bold rounded-lg border-b-4 border-green-800 hover:bg-green-500 hover:border-green-700 active:border-b-0 active:mt-1 transition-all duration-150"
                                     title="Assumir Ticket">
-                                    Assumir
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
                                 </button>
                             </form>
                         @elseif($ticket->atendente_id === auth()->id())
@@ -71,18 +75,23 @@
                                 <form action="{{ route('tickets.resume', $ticket) }}" method="POST">
                                     @csrf
                                     <button type="submit" 
-                                        class="px-6 py-3 bg-blue-600 text-black text-lg font-bold rounded-lg border-b-4 border-blue-800 hover:bg-blue-500 hover:border-blue-700 active:border-b-0 active:mt-1 transition-all duration-150"
+                                        class="p-3 bg-blue-600 text-black font-bold rounded-lg border-b-4 border-blue-800 hover:bg-blue-500 hover:border-blue-700 active:border-b-0 active:mt-1 transition-all duration-150"
                                         title="Retomar Atendimento">
-                                        Retomar
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
                                     </button>
                                 </form>
                             @else
                                 <form action="{{ route('tickets.pause', $ticket) }}" method="POST">
                                     @csrf
                                     <button type="submit" 
-                                        class="px-6 py-3 bg-yellow-500 text-black text-lg font-bold rounded-lg border-b-4 border-yellow-700 hover:bg-yellow-400 hover:border-yellow-600 active:border-b-0 active:mt-1 transition-all duration-150"
+                                        class="p-3 bg-yellow-500 text-black font-bold rounded-lg border-b-4 border-yellow-700 hover:bg-yellow-400 hover:border-yellow-600 active:border-b-0 active:mt-1 transition-all duration-150"
                                         title="Pausar Atendimento">
-                                        Pausar
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
                                     </button>
                                 </form>
                             @endif
@@ -91,9 +100,11 @@
                                 <form action="{{ route('tickets.resolve', $ticket) }}" method="POST">
                                     @csrf
                                     <button type="submit" 
-                                        class="px-6 py-3 bg-purple-600 text-black text-lg font-bold rounded-lg border-b-4 border-purple-800 hover:bg-purple-500 hover:border-purple-700 active:border-b-0 active:mt-1 transition-all duration-150"
+                                        class="p-3 bg-purple-600 text-black font-bold rounded-lg border-b-4 border-purple-800 hover:bg-purple-500 hover:border-purple-700 active:border-b-0 active:mt-1 transition-all duration-150"
                                         title="Finalizar Atendimento">
-                                        Finalizar
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                                        </svg>
                                     </button>
                                 </form>
                             @endif
@@ -189,15 +200,21 @@
                         required></textarea>
                 </div>
 
-                <div class="mb-4">
+                <div class="mb-4 flex items-center gap-2">
                     <label for="anexo" class="block text-gray-700 text-sm font-bold mb-2">Anexo (opcional)</label>
-                    <input type="file" name="anexo" id="anexo" 
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <label for="anexo" class="cursor-pointer inline-flex items-center p-2 bg-gray-200 hover:bg-gray-300 rounded" title="Anexar Arquivo">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l7.071-7.071a4 4 0 00-5.657-5.657l-7.071 7.07a6 6 0 108.485 8.486L19 13" />
+                        </svg>
+                        <input type="file" name="anexo" id="anexo" class="hidden">
+                    </label>
                 </div>
 
                 <div>
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                        Enviar Mensagem
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 rounded focus:outline-none focus:shadow-outline" title="Enviar Mensagem">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10.5l19-7-7 19-2.5-7L3 10.5z" />
+                        </svg>
                     </button>
                 </div>
             </form>
