@@ -14,17 +14,19 @@ class UsersTableSeeder extends Seeder
     public function run(): void
     {
         // Criar usuário atendente
-        User::create([
+        User::firstOrCreate([
+            'email' => 'atendente@exemplo.com'
+        ], [
             'name' => 'Atendente Sistema',
-            'email' => 'atendente@exemplo.com',
             'password' => Hash::make('senha123'),
             'tipo' => 'atendente',
         ]);
 
         // Criar usuário comum
-        User::create([
+        User::firstOrCreate([
+            'email' => 'usuario@exemplo.com'
+        ], [
             'name' => 'Usuário Teste',
-            'email' => 'usuario@exemplo.com',
             'password' => Hash::make('senha123'),
             'tipo' => 'usuario',
         ]);
