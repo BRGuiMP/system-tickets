@@ -83,7 +83,7 @@ class TicketController extends Controller
         $categories = Category::all();
         $users = null;
         if (Auth::user()->tipo === 'atendente') {
-            $users = \App\Models\User::where('tipo', 'usuario')->orderBy('name')->get();
+            $users = \App\Models\User::whereIn('tipo', ['usuario','atendente'])->orderBy('name')->get();
         }
         return view('tickets.create', compact('categories', 'users'));
     }
