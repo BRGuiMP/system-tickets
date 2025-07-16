@@ -63,16 +63,83 @@ class TicketController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tickets = Ticket::with(['categoria', 'usuario', 'atendente'])
-            ->when(Auth::user()->tipo === 'usuario', function ($query) {
-                return $query->where('usuario_id', Auth::id());
-            })
-            ->latest()
-            ->paginate(10);
+        $query = Ticket::with(['categoria', 'usuario', 'atendente']);
+        
+        // Filtro por tipo de usuário
+        if (Auth::user()->tipo === 'usuario') {
+            $query->where('usuario_id', Auth::id());
+        }
+        
+        // Filtro por status
+        if ($request->filled('status')) {
+            switch ($request->status) {
+                case 'aguardando_atendimento':
+                    $query->whereNull('assumed_at');
+                    break;
+                case 'em_atendimento':
+                    $query->whereNotNull('assumed_at')
+                          ->whereNull('paused_at')
+                          ->whereNull('resolvido_em');
+                    break;
+                case 'pausado':
+                    $query->whereNotNull('paused_at')
+                          ->whereNull('resolvido_em');
+                    break;
+                case 'resolvido':
+                    $query->whereNotNull('resolvido_em');
+                    break;
+            }
+        }
+        
+        // Filtro por prioridade
+        if ($request->filled('prioridade')) {
+            $query->where('prioridade', $request->prioridade);
+        }
+        
+        // Filtro por categoria
+        if ($request->filled('categoria_id')) {
+            $query->where('categoria_id', $request->categoria_id);
+        }
+        
+        // Filtro por atendente
+        if ($request->filled('atendente_id')) {
+            if ($request->atendente_id === 'sem_atendente') {
+                $query->whereNull('atendente_id');
+            } else {
+                $query->where('atendente_id', $request->atendente_id);
+            }
+        }
+        
+        // Filtro por título
+        if ($request->filled('titulo')) {
+            $query->where('titulo', 'like', '%' . $request->titulo . '%');
+        }
+        
+        // Filtro por data de início
+        if ($request->filled('data_inicio')) {
+            $query->whereDate('created_at', '>=', $request->data_inicio);
+        }
+        
+        // Filtro por data de fim
+        if ($request->filled('data_fim')) {
+            $query->whereDate('created_at', '<=', $request->data_fim);
+        }
+        
+        // Filtro por usuário (apenas para atendentes)
+        if (Auth::user()->tipo === 'atendente' && $request->filled('usuario_id')) {
+            $query->where('usuario_id', $request->usuario_id);
+        }
+        
+        $tickets = $query->latest()->paginate(10);
+        
+        // Buscar dados para os filtros
+        $categories = Category::orderBy('nome')->get();
+        $attendants = \App\Models\User::where('tipo', 'atendente')->orderBy('name')->get();
+        $users = \App\Models\User::where('tipo', 'usuario')->orderBy('name')->get();
             
-        return view('tickets.index', compact('tickets'));
+        return view('tickets.index', compact('tickets', 'categories', 'attendants', 'users'));
     }
 
     /**

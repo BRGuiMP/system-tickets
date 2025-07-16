@@ -1,4 +1,5 @@
 import './bootstrap';
+import './ticket-filters';
 
 import Alpine from 'alpinejs';
 
