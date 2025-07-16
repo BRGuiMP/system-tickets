@@ -17,6 +17,7 @@ class AuthServiceProvider extends ServiceProvider
         'App\Models\Category' => 'App\Policies\CategoryPolicy',
         'App\Models\Ticket' => 'App\Policies\TicketPolicy',
         'App\Models\TicketMessage' => 'App\Policies\TicketMessagePolicy',
+        'App\Models\User' => 'App\Policies\UserPolicy',
     ];
 
     /**

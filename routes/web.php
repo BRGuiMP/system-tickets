@@ -4,6 +4,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketMessageController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,6 +48,11 @@ Route::middleware('auth')->group(function () {
     // Rotas de Categorias (apenas para atendentes)
     Route::middleware(['can:manage,App\Models\Category'])->group(function () {
         Route::resource('categories', CategoryController::class);
+    });
+    
+    // Rotas de Usuários (apenas para atendentes)
+    Route::middleware(['can:manage,App\Models\User'])->group(function () {
+        Route::resource('users', UserController::class);
     });
 });
 
