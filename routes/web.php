@@ -37,6 +37,10 @@ Route::middleware('auth')->group(function () {
     // Rotas de Tickets
     Route::resource('tickets', TicketController::class);
     
+    // Rotas para tickets agendados (apenas atendentes)
+    Route::get('tickets-scheduled/create', [TicketController::class, 'createScheduled'])->name('tickets.create-scheduled');
+    Route::post('tickets-scheduled', [TicketController::class, 'storeScheduled'])->name('tickets.store-scheduled');
+    
     // Rotas de controle de tempo dos tickets
     Route::post('tickets/{ticket}/assume', [TicketController::class, 'assume'])->name('tickets.assume');
     Route::post('tickets/{ticket}/pause', [TicketController::class, 'pause'])->name('tickets.pause');

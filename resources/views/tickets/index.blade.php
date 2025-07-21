@@ -10,11 +10,20 @@
     <div class="bg-white shadow rounded-lg p-6">
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-2xl font-bold">Tickets</h2>
-            <a href="{{ route('tickets.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 rounded" title="Novo Ticket">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-            </a>
+            <div class="flex gap-2">
+                <a href="{{ route('tickets.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 rounded" title="Novo Ticket">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                </a>
+                @if(Auth::user()->tipo === 'atendente')
+                    <a href="{{ route('tickets.create-scheduled') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold p-2 rounded" title="Novo Ticket Agendado">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </a>
+                @endif
+            </div>
         </div>
 
         <!-- Área de Filtros -->
@@ -182,13 +191,9 @@
                                 {{ $ticket->atendente ? $ticket->atendente->name : 'Não atribuído' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                @if($ticket->total_time_spent)
-                                    {{ gmdate('H:i:s', $ticket->total_time_spent) }}
-                                    @if($ticket->paused_time)
-                                        <span class="text-gray-500 text-xs">({{ gmdate('H:i:s', $ticket->paused_time) }} em pausa)</span>
-                                    @endif
-                                @else
-                                    -
+                                {{ $ticket->getFormattedTotalTime() }}
+                                @if($ticket->paused_time)
+                                    <span class="text-gray-500 text-xs">({{ gmdate('H:i:s', $ticket->paused_time) }} em pausa)</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

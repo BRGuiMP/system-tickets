@@ -156,6 +156,22 @@ class TicketController extends Controller
     }
 
     /**
+     * Show the form for creating a scheduled ticket (atendentes only).
+     */
+    public function createScheduled()
+    {
+        if (Auth::user()->tipo !== 'atendente') {
+            abort(403, 'Apenas atendentes podem criar tickets agendados.');
+        }
+        
+        $categories = Category::all();
+        $users = \App\Models\User::where('tipo', 'usuario')->orderBy('name')->get();
+        $attendants = \App\Models\User::where('tipo', 'atendente')->orderBy('name')->get();
+        
+        return view('tickets.create-scheduled', compact('categories', 'users', 'attendants'));
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -183,6 +199,45 @@ class TicketController extends Controller
 
         return redirect()->route('tickets.show', $ticket)
             ->with('success', 'Ticket criado com sucesso.');
+    }
+
+    /**
+     * Store a newly created scheduled ticket.
+     */
+    public function storeScheduled(Request $request)
+    {
+        if (Auth::user()->tipo !== 'atendente') {
+            abort(403, 'Apenas atendentes podem criar tickets agendados.');
+        }
+
+        $request->validate([
+            'titulo' => 'required|string|max:255',
+            'descricao' => 'required|string',
+            'categoria_id' => 'required|exists:categories,id',
+            'prioridade' => 'required|in:Baixa,Média,Alta,Urgente',
+            'usuario_id' => 'required|exists:users,id',
+            'atendente_id' => 'required|exists:users,id',
+            'data_agendamento' => 'required|date|after_or_equal:today',
+            'hora_agendamento' => 'required|date_format:H:i',
+        ]);
+
+        // Combinar data e hora
+        $dataHoraAgendamento = $request->data_agendamento . ' ' . $request->hora_agendamento . ':00';
+
+        $ticket = Ticket::create([
+            'titulo' => $request->titulo,
+            'descricao' => $request->descricao,
+            'categoria_id' => $request->categoria_id,
+            'prioridade' => $request->prioridade,
+            'status' => 'Em Andamento',
+            'usuario_id' => $request->usuario_id,
+            'atendente_id' => $request->atendente_id,
+            'assumed_at' => now(),
+            'data_agendamento' => $dataHoraAgendamento,
+        ]);
+
+        return redirect()->route('tickets.show', $ticket)
+            ->with('success', 'Ticket agendado criado e assumido com sucesso.');
     }
 
     /**

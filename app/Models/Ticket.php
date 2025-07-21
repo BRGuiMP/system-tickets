@@ -12,7 +12,8 @@ class Ticket extends Model
     protected $casts = [
         'assumed_at' => 'datetime',
         'paused_at' => 'datetime',
-        'resolvido_em' => 'datetime'
+        'resolvido_em' => 'datetime',
+        'data_agendamento' => 'datetime'
     ];
 
     protected $fillable = [
@@ -27,7 +28,8 @@ class Ticket extends Model
         'assumed_at',
         'paused_at',
         'total_time_spent',
-        'paused_time'
+        'paused_time',
+        'data_agendamento'
     ];
 
     public function categoria()
@@ -102,8 +104,21 @@ class Ticket extends Model
     private function calculateTimeSpent()
     {
         $end = $this->paused_at ?? now();
-        $totalSeconds = $this->assumed_at->diffInSeconds($end);
+        
+        // Para tickets agendados, usar a data de agendamento como início
+        // Para tickets normais, usar assumed_at
+        $start = $this->getStartTime();
+        
+        $totalSeconds = $start->diffInSeconds($end);
         return $totalSeconds - ($this->paused_time ?? 0);
+    }
+
+    /**
+     * Retorna a data/hora de início efetiva para cálculo de tempo
+     */
+    private function getStartTime()
+    {
+        return $this->data_agendamento ?? $this->assumed_at;
     }
 
     /**
@@ -120,6 +135,28 @@ class Ticket extends Model
     public function isInProgress()
     {
         return !is_null($this->assumed_at) && is_null($this->resolvido_em);
+    }
+
+    /**
+     * Retorna o tempo total de atendimento formatado
+     */
+    public function getFormattedTotalTime()
+    {
+        if (!$this->assumed_at) {
+            return 'Não iniciado';
+        }
+
+        $seconds = $this->total_time_spent ?? $this->calculateTimeSpent();
+        
+        $hours = floor($seconds / 3600);
+        $minutes = floor(($seconds % 3600) / 60);
+        $remainingSeconds = $seconds % 60;
+
+        if ($hours > 0) {
+            return sprintf('%02d:%02d:%02d', $hours, $minutes, $remainingSeconds);
+        }
+        
+        return sprintf('%02d:%02d', $minutes, $remainingSeconds);
     }
 
     public function mensagens()

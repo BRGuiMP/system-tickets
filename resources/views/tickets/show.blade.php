@@ -122,12 +122,10 @@
                                 <p class="text-gray-600">Status do Atendimento:</p>
                                 <p>{{ $ticket->isPaused() ? 'Pausado' : ($ticket->isInProgress() ? 'Em Andamento' : 'Finalizado') }}</p>
                             </div>
-                            @if($ticket->total_time_spent)
-                                <div>
-                                    <p class="text-gray-600">Tempo Total de Atendimento:</p>
-                                    <p>{{ gmdate('H:i:s', $ticket->total_time_spent) }}</p>
-                                </div>
-                            @endif
+                            <div>
+                                <p class="text-gray-600">Tempo Total de Atendimento:</p>
+                                <p>{{ $ticket->getFormattedTotalTime() }}</p>
+                            </div>
                             @if($ticket->paused_time)
                                 <div>
                                     <p class="text-gray-600">Tempo Total em Pausa:</p>
@@ -149,6 +147,12 @@
                     <p class="text-gray-600">Criado em:</p>
                     <p>{{ $ticket->created_at->format('d/m/Y H:i') }}</p>
                 </div>
+                @if($ticket->data_agendamento)
+                    <div class="mt-2">
+                        <p class="text-gray-600">Data de Agendamento:</p>
+                        <p class="text-green-600 font-semibold">{{ $ticket->data_agendamento->format('d/m/Y H:i') }}</p>
+                    </div>
+                @endif
             </div>
 
             <div class="mt-4">
