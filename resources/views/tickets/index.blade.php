@@ -146,6 +146,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Título</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoria</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prioridade</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Atendente</th>
@@ -161,8 +162,33 @@
                                     #{{ $ticket->id }}
                                 </a>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $ticket->titulo }}</td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm font-medium text-gray-900">{{ $ticket->titulo }}</div>
+                                @if($ticket->data_agendamento)
+                                    <div class="text-xs text-purple-600">
+                                        📅 Agendado: {{ $ticket->data_agendamento->format('d/m H:i') }}
+                                        @if($ticket->isScheduledWithResolution())
+                                            → {{ $ticket->resolvido_em->format('d/m H:i') }}
+                                        @endif
+                                    </div>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $ticket->categoria->nome }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                    @if($ticket->isScheduledWithResolution()) bg-purple-100 text-purple-800
+                                    @elseif($ticket->data_agendamento) bg-indigo-100 text-indigo-800
+                                    @else bg-gray-100 text-gray-800
+                                    @endif">
+                                    @if($ticket->isScheduledWithResolution())
+                                        Agendado/Resolvido
+                                    @elseif($ticket->data_agendamento)
+                                        Agendado
+                                    @else
+                                        Normal
+                                    @endif
+                                </span>
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                                     @if(!$ticket->assumed_at) bg-yellow-100 text-yellow-800
@@ -191,9 +217,12 @@
                                 {{ $ticket->atendente ? $ticket->atendente->name : 'Não atribuído' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                {{ $ticket->getFormattedTotalTime() }}
+                                <div class="text-sm text-gray-900">{{ $ticket->getFormattedTotalTime() }}</div>
                                 @if($ticket->paused_time)
-                                    <span class="text-gray-500 text-xs">({{ gmdate('H:i:s', $ticket->paused_time) }} em pausa)</span>
+                                    <div class="text-xs text-gray-500">({{ gmdate('H:i:s', $ticket->paused_time) }} em pausa)</div>
+                                @endif
+                                @if($ticket->isScheduledWithResolution())
+                                    <div class="text-xs text-purple-600">Tempo pré-calculado</div>
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -202,7 +231,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-4 whitespace-nowrap text-center text-gray-500">
+                            <td colspan="9" class="px-6 py-4 whitespace-nowrap text-center text-gray-500">
                                 Nenhum ticket encontrado com os filtros aplicados.
                             </td>
                         </tr>

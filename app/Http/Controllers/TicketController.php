@@ -210,7 +210,7 @@ class TicketController extends Controller
             abort(403, 'Apenas atendentes podem criar tickets agendados.');
         }
 
-        $request->validate([
+        $rules = [
             'titulo' => 'required|string|max:255',
             'descricao' => 'required|string',
             'categoria_id' => 'required|exists:categories,id',
@@ -219,25 +219,67 @@ class TicketController extends Controller
             'atendente_id' => 'required|exists:users,id',
             'data_agendamento' => 'required|date|after_or_equal:today',
             'hora_agendamento' => 'required|date_format:H:i',
-        ]);
+            'data_encerramento' => 'nullable|date',
+            'hora_encerramento' => 'nullable|date_format:H:i',
+        ];
 
-        // Combinar data e hora
+        // Se data de encerramento for informada, hora também deve ser
+        if ($request->filled('data_encerramento')) {
+            $rules['hora_encerramento'] = 'required|date_format:H:i';
+        }
+
+        $request->validate($rules);
+
+        // Combinar data e hora de agendamento
         $dataHoraAgendamento = $request->data_agendamento . ' ' . $request->hora_agendamento . ':00';
 
-        $ticket = Ticket::create([
+        // Verificar se há data de encerramento
+        $dataHoraEncerramento = null;
+        if ($request->filled('data_encerramento') && $request->filled('hora_encerramento')) {
+            $dataHoraEncerramento = $request->data_encerramento . ' ' . $request->hora_encerramento . ':00';
+            
+            // Validar que encerramento é posterior ao agendamento
+            if (strtotime($dataHoraEncerramento) <= strtotime($dataHoraAgendamento)) {
+                return back()->withErrors([
+                    'data_encerramento' => 'A data/hora de encerramento deve ser posterior à data/hora de agendamento.'
+                ])->withInput();
+            }
+        }
+
+        // Determinar status baseado na presença de data de encerramento
+        $status = $dataHoraEncerramento ? 'Resolvido' : 'Em Andamento';
+
+        // Criar o ticket
+        $ticketData = [
             'titulo' => $request->titulo,
             'descricao' => $request->descricao,
             'categoria_id' => $request->categoria_id,
             'prioridade' => $request->prioridade,
-            'status' => 'Em Andamento',
+            'status' => $status,
             'usuario_id' => $request->usuario_id,
             'atendente_id' => $request->atendente_id,
             'assumed_at' => now(),
             'data_agendamento' => $dataHoraAgendamento,
-        ]);
+        ];
+
+        // Se há data de encerramento, calcular tempo e definir como resolvido
+        if ($dataHoraEncerramento) {
+            $ticketData['resolvido_em'] = $dataHoraEncerramento;
+            
+            // Calcular tempo total gasto (em segundos)
+            $inicio = strtotime($dataHoraAgendamento);
+            $fim = strtotime($dataHoraEncerramento);
+            $ticketData['total_time_spent'] = $fim - $inicio;
+        }
+
+        $ticket = Ticket::create($ticketData);
+
+        $message = $dataHoraEncerramento 
+            ? 'Ticket agendado criado e resolvido com sucesso. Tempo calculado automaticamente.'
+            : 'Ticket agendado criado e assumido com sucesso.';
 
         return redirect()->route('tickets.show', $ticket)
-            ->with('success', 'Ticket agendado criado e assumido com sucesso.');
+            ->with('success', $message);
     }
 
     /**

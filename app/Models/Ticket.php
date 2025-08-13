@@ -142,7 +142,7 @@ class Ticket extends Model
      */
     public function getFormattedTotalTime()
     {
-        if (!$this->assumed_at) {
+        if (!$this->assumed_at && !$this->data_agendamento) {
             return 'Não iniciado';
         }
 
@@ -157,6 +157,28 @@ class Ticket extends Model
         }
         
         return sprintf('%02d:%02d', $minutes, $remainingSeconds);
+    }
+
+    /**
+     * Verifica se é um ticket agendado com encerramento predefinido
+     */
+    public function isScheduledWithResolution()
+    {
+        return $this->data_agendamento && $this->resolvido_em && $this->status === 'Resolvido';
+    }
+
+    /**
+     * Retorna uma descrição do tipo de ticket para exibição
+     */
+    public function getTicketTypeDescription()
+    {
+        if ($this->isScheduledWithResolution()) {
+            return 'Ticket Agendado (Resolvido)';
+        } elseif ($this->data_agendamento) {
+            return 'Ticket Agendado';
+        } else {
+            return 'Ticket Normal';
+        }
     }
 
     public function mensagens()

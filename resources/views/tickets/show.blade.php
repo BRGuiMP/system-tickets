@@ -52,7 +52,37 @@
                     <p class="text-gray-600">Atendente:</p>
                     <p>{{ $ticket->atendente ? $ticket->atendente->name : 'Não atribuído' }}</p>
                 </div>
+                <div>
+                    <p class="text-gray-600">Tipo:</p>
+                    <p>{{ $ticket->getTicketTypeDescription() }}</p>
+                </div>
             </div>
+
+            @if($ticket->data_agendamento)
+                <div class="mt-6 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+                    <h3 class="text-lg font-semibold text-blue-800 mb-2">Informações de Agendamento</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-gray-600">Data/Hora de Agendamento:</p>
+                            <p class="font-semibold text-blue-700">{{ $ticket->data_agendamento->format('d/m/Y H:i') }}</p>
+                        </div>
+                        @if($ticket->resolvido_em && $ticket->isScheduledWithResolution())
+                            <div>
+                                <p class="text-gray-600">Data/Hora de Encerramento:</p>
+                                <p class="font-semibold text-green-700">{{ $ticket->resolvido_em->format('d/m/Y H:i') }}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600">Tempo Total de Atendimento:</p>
+                                <p class="font-semibold text-purple-700">{{ $ticket->getFormattedTotalTime() }}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600">Status do Ticket:</p>
+                                <p class="font-semibold text-green-700">Ticket Pré-resolvido (Agendado)</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            @endif
 
             @if(auth()->user()->tipo === 'atendente')
                 <div class="mt-6 p-4 bg-gray-50 rounded-lg">
@@ -140,24 +170,20 @@
             <div class="mt-6">
                 <h3 class="text-lg font-semibold mb-4">Descrição</h3>
                 <div class="bg-gray-50 rounded p-4">
-                    {{ $ticket->descricao }}
-                    <p>{{ $ticket->atendente ? $ticket->atendente->name : 'Não atribuído' }}</p>
+                    <p class="whitespace-pre-line">{{ $ticket->descricao }}</p>
                 </div>
-                <div>
-                    <p class="text-gray-600">Criado em:</p>
-                    <p>{{ $ticket->created_at->format('d/m/Y H:i') }}</p>
-                </div>
-                @if($ticket->data_agendamento)
-                    <div class="mt-2">
-                        <p class="text-gray-600">Data de Agendamento:</p>
-                        <p class="text-green-600 font-semibold">{{ $ticket->data_agendamento->format('d/m/Y H:i') }}</p>
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-gray-600">Criado em:</p>
+                        <p>{{ $ticket->created_at->format('d/m/Y H:i') }}</p>
                     </div>
-                @endif
-            </div>
-
-            <div class="mt-4">
-                <p class="text-gray-600">Descrição:</p>
-                <p class="mt-2 whitespace-pre-line">{{ $ticket->descricao }}</p>
+                    @if($ticket->resolvido_em && !$ticket->isScheduledWithResolution())
+                        <div>
+                            <p class="text-gray-600">Resolvido em:</p>
+                            <p class="text-green-600 font-semibold">{{ $ticket->resolvido_em->format('d/m/Y H:i') }}</p>
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
 

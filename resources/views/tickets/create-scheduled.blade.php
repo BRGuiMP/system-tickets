@@ -111,7 +111,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <!-- Data do Agendamento -->
                 <div>
                     <label for="data_agendamento" class="block text-gray-700 text-sm font-bold mb-2">Data do Agendamento</label>
@@ -138,6 +138,38 @@
                 </div>
             </div>
 
+            <!-- Seção de Encerramento (Opcional) -->
+            <div class="bg-gray-50 p-4 rounded-lg mb-6">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">Encerramento do Ticket (Opcional)</h3>
+                <p class="text-sm text-gray-600 mb-4">
+                    Se informado, o ticket será criado já como resolvido com o tempo calculado automaticamente.
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Data de Encerramento -->
+                    <div>
+                        <label for="data_encerramento" class="block text-gray-700 text-sm font-bold mb-2">Data de Encerramento</label>
+                        <input type="date" name="data_encerramento" id="data_encerramento" 
+                            value="{{ old('data_encerramento') }}" 
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('data_encerramento') border-red-500 @enderror">
+                        @error('data_encerramento')
+                            <p class="text-red-500 text-xs italic mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Hora de Encerramento -->
+                    <div>
+                        <label for="hora_encerramento" class="block text-gray-700 text-sm font-bold mb-2">Hora de Encerramento</label>
+                        <input type="time" name="hora_encerramento" id="hora_encerramento" 
+                            value="{{ old('hora_encerramento') }}"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('hora_encerramento') border-red-500 @enderror">
+                        @error('hora_encerramento')
+                            <p class="text-red-500 text-xs italic mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+
             <!-- Botões -->
             <div class="flex items-center justify-between">
                 <a href="{{ route('tickets.index') }}" 
@@ -155,14 +187,71 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Validação client-side para data não ser no passado
+    // Elementos do DOM
     const dateInput = document.getElementById('data_agendamento');
+    const timeInput = document.getElementById('hora_agendamento');
+    const endDateInput = document.getElementById('data_encerramento');
+    const endTimeInput = document.getElementById('hora_encerramento');
     const today = new Date().toISOString().split('T')[0];
     
+    // Validação para data de agendamento não ser no passado
     dateInput.addEventListener('change', function() {
         if (this.value < today) {
             alert('A data de agendamento não pode ser no passado.');
             this.value = today;
+        }
+        validateEndDate();
+    });
+    
+    // Validação para hora de agendamento
+    timeInput.addEventListener('change', function() {
+        validateEndDate();
+    });
+    
+    // Validação para data de encerramento
+    endDateInput.addEventListener('change', function() {
+        validateEndDate();
+    });
+    
+    // Validação para hora de encerramento
+    endTimeInput.addEventListener('change', function() {
+        validateEndDate();
+    });
+    
+    // Função para validar data/hora de encerramento
+    function validateEndDate() {
+        if (!endDateInput.value) return; // Se não há data de encerramento, não validar
+        
+        const startDate = dateInput.value;
+        const startTime = timeInput.value || '00:00';
+        const endDate = endDateInput.value;
+        const endTime = endTimeInput.value || '23:59';
+        
+        if (!startDate || !startTime) return;
+        
+        const startDateTime = new Date(`${startDate}T${startTime}`);
+        const endDateTime = new Date(`${endDate}T${endTime}`);
+        
+        if (endDateTime <= startDateTime) {
+            alert('A data/hora de encerramento deve ser posterior à data/hora de agendamento.');
+            endDateInput.value = '';
+            endTimeInput.value = '';
+        }
+    }
+    
+    // Se data de encerramento for preenchida, hora também deve ser
+    endDateInput.addEventListener('change', function() {
+        if (this.value && !endTimeInput.value) {
+            endTimeInput.focus();
+        }
+    });
+    
+    // Se hora de encerramento for preenchida, data também deve ser
+    endTimeInput.addEventListener('change', function() {
+        if (this.value && !endDateInput.value) {
+            alert('Para definir hora de encerramento, é necessário informar a data de encerramento.');
+            this.value = '';
+            endDateInput.focus();
         }
     });
     
