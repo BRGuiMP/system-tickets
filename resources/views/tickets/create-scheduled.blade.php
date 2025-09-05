@@ -117,7 +117,6 @@
                     <label for="data_agendamento" class="block text-gray-700 text-sm font-bold mb-2">Data do Agendamento</label>
                     <input type="date" name="data_agendamento" id="data_agendamento" 
                         value="{{ old('data_agendamento', date('Y-m-d')) }}" 
-                        min="{{ date('Y-m-d') }}"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('data_agendamento') border-red-500 @enderror"
                         required>
                     @error('data_agendamento')
@@ -195,13 +194,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const today = new Date().toISOString().split('T')[0];
     
     // Validação para data de agendamento não ser no passado
-    dateInput.addEventListener('change', function() {
+    /*dateInput.addEventListener('change', function() {
         if (this.value < today) {
             alert('A data de agendamento não pode ser no passado.');
             this.value = today;
         }
         validateEndDate();
-    });
+    });*/
     
     // Validação para hora de agendamento
     timeInput.addEventListener('change', function() {
