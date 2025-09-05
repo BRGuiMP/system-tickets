@@ -217,7 +217,7 @@ class TicketController extends Controller
             'prioridade' => 'required|in:Baixa,Média,Alta,Urgente',
             'usuario_id' => 'required|exists:users,id',
             'atendente_id' => 'required|exists:users,id',
-            'data_agendamento' => 'required|date|after_or_equal:today',
+            'data_agendamento' => 'required|date',
             'hora_agendamento' => 'required|date_format:H:i',
             'data_encerramento' => 'nullable|date',
             'hora_encerramento' => 'nullable|date_format:H:i',
