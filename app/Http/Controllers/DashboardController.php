@@ -267,10 +267,14 @@ class DashboardController extends Controller
             $baseQuery->where('atendente_id', $user->id);
         }
         
-        return $baseQuery->whereBetween('resolvido_em', [$dateRange['start'], $dateRange['end']])
+        return $baseQuery
+            ->whereBetween('resolvido_em', [$dateRange['start'], $dateRange['end']])
             ->whereNotNull('resolvido_em')
-            ->whereHas('mensagens', function($query) {
-                $query->havingRaw('COUNT(*) = 1');
+            ->whereIn('id', function ($query) {
+                $query->select('ticket_id')
+                    ->from('ticket_messages')
+                    ->groupBy('ticket_id')
+                    ->havingRaw('COUNT(*) = 1');
             })
             ->count();
     }
